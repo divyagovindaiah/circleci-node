@@ -8,8 +8,23 @@ jobs:
      - checkout
      - run: echo "build project"
      - run: npm install
+  deploy:
+    docker:
+      - image: circleci/node:12.16
+        
+    steps:
+      - checkout
+      - run: my-deploy-commands
+   
 workflows:
   build-project:
     jobs:
-    - build
+      - build
+      - hold:
+          type: approval
+          requires:
+            - build
+      - deploy:
+          requires:
+            - hold
         
